@@ -44,7 +44,13 @@ extension QueryType {
         try encodable.encode(to: encoder)
         return self.insert(encoder.setters + otherSetters)
     }
-
+    
+    public func insert(or: OnConflict, _ encodable: Encodable, userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = []) throws -> Insert {
+        let encoder = SQLiteEncoder(userInfo: userInfo)
+        try encodable.encode(to: encoder)
+        return self.insert(or: or, encoder.setters + otherSetters)
+    }
+    
     /// Creates an `UPDATE` statement by encoding the given object
     /// This method converts any custom nested types to JSON data and does not handle any sort
     /// of object relationships. If you want to support relationships between objects you will
